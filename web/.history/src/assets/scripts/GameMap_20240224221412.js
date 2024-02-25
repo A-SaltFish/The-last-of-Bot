@@ -17,7 +17,7 @@ export class GameMap extends AcGameObject {
         this.snakes = [
             new Snake({ id: 0, color: "#ffe898", r: this.rows - 2, c: 1 }, this),
             new Snake({ id: 1, color: "#ff8d95", r: 1, c: this.cols - 2 }, this)
-        ];
+        ]
     }
 
     add_listening_events(){

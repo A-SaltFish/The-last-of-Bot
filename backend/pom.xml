@@ -31,6 +31,56 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--  https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.2.3</version>
+        </dependency>
+        <!--lombok可以自动帮我们写一些代码-->
+        <!--  https://mvnrepository.com/artifact/org.projectlombok/lombok  -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 能通过注解的形式自动生成构造器、getter/setter、equals、hashcode、toString等方法 -->
+        <!--  https://mvnrepository.com/artifact/com.mysql/mysql-connector-j  -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+        <!--   自 Spring Boot 2.7.8 起，更改 mysql:mysql-connector-java -> com.mysql:mysql-connector-j 并删除 mysql-connector-java 依赖管理 -->
+        <!--  https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter  -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis-spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <!--  https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator  -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>3.5.5</version>
+        </dependency>
     </dependencies>
 
     <build>
