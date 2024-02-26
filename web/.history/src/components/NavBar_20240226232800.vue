@@ -59,11 +59,12 @@
                 >
               </li>
               <li>
-                <a
+                <router-link
                   class="dropdown-item"
-                  href="#" 
+                  :to="{ name: '404' }"
                   @click="logout"
-                  >退出</a>
+                  >退出</router-link
+                >
               </li>
             </ul>
           </li>

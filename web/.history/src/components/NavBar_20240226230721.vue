@@ -59,27 +59,21 @@
                 >
               </li>
               <li>
-                <a
-                  class="dropdown-item"
-                  href="#" 
-                  @click="logout"
-                  >退出</a>
+                <router-link class="dropdown-item" :to="{ name: '404' }"
+                  >退出</router-link
+                >
               </li>
             </ul>
           </li>
         </ul>
         <ul class="navbar-nav" v-else>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{ name: 'user_account_login' }"
-              >登录</router-link
-            >
+            <router-link class="dropdown-item" :to="{ name: 'user_account_login' }"
+              >登录</router-link>
           </li>
           <li class="nav-item">
-            <router-link
-              class="nav-link"
-              :to="{ name: 'user_account_register' }"
-              >注册</router-link
-            >
+            <router-link class="dropdown-item" :to="{ name: 'user_account_register' }"
+              >注册</router-link>
           </li>
         </ul>
       </div>
@@ -89,20 +83,14 @@
 <script>
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { useStore } from "vuex";
+import {$store} from "@/store";
 export default {
   setup() {
     const route = useRoute();
-    const store = useStore();
     //computed（）里面是要传一个具有返回值的函数，作为计算属性的getter。
     //例如此处route_name=compute()...是让route.name的值绑定为计算属性route_name的值。route.name改变，route_name改变。使用computed具有缓存计算属性的功能，内部计算属性的响应式数据没有改变，该数据将一直存在缓存区中，不会被重新计算，加快运行速度。
     let route_name = computed(() => route.name);
-
-    const logout = () => {
-      store.dispatch("logout");
-    };
-
-    return { route_name, logout };
+    return { route_name };
   },
 };
 </script>

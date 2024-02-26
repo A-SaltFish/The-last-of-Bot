@@ -59,11 +59,12 @@
                 >
               </li>
               <li>
-                <a
+                <router-link
                   class="dropdown-item"
-                  href="#" 
+                  :to="{ name: '404' }"
                   @click="logout"
-                  >退出</a>
+                  >退出</router-link
+                >
               </li>
             </ul>
           </li>
@@ -89,11 +90,11 @@
 <script>
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { userStore } from "vuex";
 export default {
   setup() {
     const route = useRoute();
-    const store = useStore();
+    const store = userStore();
     //computed（）里面是要传一个具有返回值的函数，作为计算属性的getter。
     //例如此处route_name=compute()...是让route.name的值绑定为计算属性route_name的值。route.name改变，route_name改变。使用computed具有缓存计算属性的功能，内部计算属性的响应式数据没有改变，该数据将一直存在缓存区中，不会被重新计算，加快运行速度。
     let route_name = computed(() => route.name);

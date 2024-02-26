@@ -5,8 +5,8 @@ import RanklistIndexView from '../views/ranklist/RanklistIndexView.vue'
 import UserBotIndexView from '../views/user/bot/UserBotIndexView.vue'
 import UserInfoIndexView from '../views/user/info/UserInfoIndexView.vue'
 import NotFound from '../views/error/NotFound.vue'
-import UserAccountLoginView from '../views/user/account/UserAccountLoginView.vue'
-import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView.vue'
+import UserAccountLoginView from '@/views/user/account/UserAccountLoginView.vue'
+import UserAccountRegisterView from '@/views/user/account/UserAccountRegisterView.vue'
 
 const routes = [
   {

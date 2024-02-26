@@ -3,7 +3,7 @@ package com.tlb.backend.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tlb.backend.mapper.UserMapper;
 import com.tlb.backend.pojo.User;
-import com.tlb.backend.service.impl.utils.UserDetailImpl;
+import com.tlb.backend.service.impl.utils.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if(user==null){
             throw new RuntimeException("用户不存在");
         }
-        return new UserDetailImpl(user);
+        return new UserDetailsImpl(user);
     }
 }

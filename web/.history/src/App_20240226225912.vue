@@ -7,7 +7,7 @@
 import NavBar from "./components/NavBar.vue";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap";
-//import $ from "jquery";
+import $ from "jquery";
 export default {
   components: {
     NavBar,
