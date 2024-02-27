@@ -7,9 +7,11 @@ export default{
         photo:"",
         token:"",
         is_login:false,
+        pulling_info:true,  //是否正在拉取信息
     },
     getters: {
     },
+    //用mutations里的函数，我们采用store.commit。同步操作可以放mutation
     mutations: {
         updateUser(state,user){
             state.id=user.id;
@@ -26,8 +28,12 @@ export default{
           state.photo="";
           state.token="";
           state.is_login=false
+        },
+        updatePullingInfo(state,info){
+          state.pulling_info=info;
         }
     },
+        //用actions里的函数，我们采用store.dispatch。主要负责处理异步操作，比如这里找服务器拉取信息
     actions: {
         login(context,data){
             $.ajax({
@@ -39,6 +45,7 @@ export default{
                 },
                 success(res) {
                   if(res.error==="success"){
+                    localStorage.setItem("jwt_token",res.token);
                     context.commit("updateToken",res.token);
                     data.success(res)
                   }else{
@@ -79,6 +86,7 @@ export default{
               });
         },
         logout(context){
+          localStorage.removeItem("jwt_token");
           context.commit("logout");
         }
     },

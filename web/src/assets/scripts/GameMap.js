@@ -8,7 +8,7 @@ export class GameMap extends AcGameObject {
         this.parent = parent;
         this.L = 0;
 
-        this.cols = 16;
+        this.cols = 15;
         this.rows = 16;
 
         this.walls = []

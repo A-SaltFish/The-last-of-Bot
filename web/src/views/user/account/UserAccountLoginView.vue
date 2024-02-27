@@ -1,5 +1,5 @@
 <template>
-  <ContentField>
+  <ContentField v-if="!$store.state.user.pulling_info">
     <div class="row justify-content-md-center">
       <div class="col-3">
         <form @submit.prevent="login">
@@ -56,6 +56,22 @@ export default {
     let password = ref("");
     let error_msg = ref("");
 
+    const jwt_token=localStorage.getItem("jwt_token");
+    if(jwt_token){
+      store.commit("updateToken",jwt_token);
+      store.dispatch("getinfo",{
+        success(){
+          router.push({name:"home"})
+          store.commit("updatePullingInfo",false);
+        },
+        error(){
+          store.commit("updatePullingInfo",false);
+        }
+      })
+    }else{
+      store.commit("updatePullingInfo",false);
+    }
+
     const login = () => {
       error_msg.value = "";
       store.dispatch("login", {
@@ -63,12 +79,10 @@ export default {
         password: password.value,
         success() {
           store.dispatch("getinfo", {
-            success(res) {
-              console.log("getinfo", res);
+            success() {
               router.push({ name: "home" });
             },
-            error(res) {
-              console.log(res);
+            error() {
               error_msg.value = "用户名或密码错误！";
             },
           });
