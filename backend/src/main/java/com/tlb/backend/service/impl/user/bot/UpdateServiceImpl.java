@@ -31,7 +31,6 @@ public class UpdateServiceImpl implements UpdateService {
         String title=data.get("title");
         String description=data.get("description");
         String content=data.get("content");
-
         Map<String,String> map =new HashMap<>();
         if(title==null||title.length()==0){
             map.put("error","标题不能为空 ");
@@ -48,7 +47,7 @@ public class UpdateServiceImpl implements UpdateService {
             map.put("error","bot描述过多 不能大于300 ");
             return map;
         }
-        if(content==null||description.length()==0){
+        if(content==null||content.length()==0){
             map.put("error","bot代码不为空 ");
             return map;
         }
