@@ -6,6 +6,13 @@
           <div class="card-body">
             <img :src="$store.state.user.photo" alt="" style="width: 100%" />
           </div>
+          <div class="card-body">
+            <div>昵称：</div>
+            <div>邮箱：</div>
+            <div>手机号：</div>
+            <div>出生日期：</div>
+            <div>个人简介：</div>
+          </div>
         </div>
       </div>
       <div class="col-9">
