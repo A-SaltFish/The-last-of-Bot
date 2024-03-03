@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tlb.backend.consumer.utils.GameUtil;
 import com.tlb.backend.consumer.utils.JwtAuthentication;
+import com.tlb.backend.mapper.RecordMapper;
 import com.tlb.backend.mapper.UserMapper;
 import com.tlb.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,11 @@ public class WebSocketServer {
     private Session session=null;
     private User user;
 
+    public  static RecordMapper recordMapper;
+
     //static 全局变量，所有WebSocket实例都维护同一份；
     //存有的socket用户
-    final private static ConcurrentHashMap<Integer,WebSocketServer> users=new ConcurrentHashMap<>();
+    final public static ConcurrentHashMap<Integer,WebSocketServer> users=new ConcurrentHashMap<>();
     //匹配池
     final private static CopyOnWriteArraySet<User> matchpool=new CopyOnWriteArraySet<>();
 
@@ -40,7 +43,10 @@ public class WebSocketServer {
         WebSocketServer.userMapper=userMapper;
     }
 
-
+    @Autowired
+    public void setRecordMapper(RecordMapper recordMapper){
+        WebSocketServer.recordMapper=recordMapper;
+    }
 
     @OnOpen
     public void onOpen(Session session, @PathParam("token") String token) throws IOException {
@@ -76,8 +82,23 @@ public class WebSocketServer {
             matchpool.remove(a);
             matchpool.remove(b);
 
-            game=new GameUtil(16,15,40);
+            game=new GameUtil(16,15,40,a.getId(),b.getId());
             game.createMap();
+            //开启游戏
+            game.start();
+            users.get(a.getId()).game=game;
+            users.get(b.getId()).game=game;
+
+
+            //游戏相关的json
+            JSONObject resGame=new JSONObject();
+            resGame.put("a_id",game.getPlayerA().getId());
+            resGame.put("a_sx",game.getPlayerA().getSx());
+            resGame.put("a_sy",game.getPlayerA().getSy());
+            resGame.put("b_id",game.getPlayerB().getId());
+            resGame.put("b_sx",game.getPlayerB().getSx());
+            resGame.put("b_sy",game.getPlayerB().getSy());
+            resGame.put("map",game.getWall());
 
             //通知websocket两侧
             JSONObject resA=new JSONObject();
@@ -85,7 +106,7 @@ public class WebSocketServer {
             resA.put("opponent_username",b.getUsername());
             resA.put("opponent_photo",b.getPhoto());
             resA.put("opponent_rating",b.getRating());
-            resA.put("gamemap",game.getWall());
+            resA.put("game",resGame);
             users.get(a.getId()).sendMessage(resA.toJSONString());
 
             JSONObject resB=new JSONObject();
@@ -93,7 +114,7 @@ public class WebSocketServer {
             resB.put("opponent_username",a.getUsername());
             resB.put("opponent_photo",a.getPhoto());
             resB.put("opponent_rating",a.getRating());
-            resB.put("gamemap",game.getWall());
+            resB.put("game",resGame);
             users.get(b.getId()).sendMessage(resB.toJSONString());
         }
     }
@@ -112,10 +133,22 @@ public class WebSocketServer {
         String event=data.getString("event");
         if("start-matching".equals(event)){
             startMatching();
-        }else{
+        }else if("stop-matching".equals(event)){
             stopMatching();
+        }else if("move".equals(event)){
+            move(data.getInteger("direction"));
         }
 
+    }
+
+    //设置移动方向
+    private void move(int d){
+        //如果是蛇A
+        if(game.getPlayerA().getId().equals(user.getId())){
+            game.setNextStepA(d);
+        }else if(game.getPlayerB().getId().equals(user.getId())){
+            game.setNextStepB(d);
+        }
     }
 
     @OnError

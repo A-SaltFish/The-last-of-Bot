@@ -3,7 +3,6 @@ package com.tlb.backend.service.impl.user.account;
 import com.tlb.backend.pojo.User;
 import com.tlb.backend.service.impl.utils.UserDetailsImpl;
 import com.tlb.backend.service.user.account.InfoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

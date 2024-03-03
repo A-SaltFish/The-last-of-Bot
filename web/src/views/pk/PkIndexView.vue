@@ -2,11 +2,13 @@
   <ContentField>游戏区域</ContentField>
   <PlayGround v-if="$store.state.pk.status==='playing'"></PlayGround>
   <MatchGround v-if="$store.state.pk.status==='matching'||$store.state.pk.status==='match-success'"></MatchGround>
+  <ResultBoard v-if="$store.state.pk.loser !='none'" />
 </template>
 <script>
   import ContentField from '@/components/ContentField.vue'
   import PlayGround from '@/components/PlayGround.vue'
   import MatchGround from '@/components/MatchGround.vue'
+  import ResultBoard from '@/components/ResultBoard.vue'
   import { onMounted, onUnmounted } from 'vue'
   import { useStore } from 'vuex'
 
@@ -15,6 +17,7 @@
       ContentField,
       PlayGround,
       MatchGround,
+      ResultBoard,
     },
     setup () {
       const store = useStore();
@@ -44,10 +47,32 @@
             store.commit("updateStatus", "match-success")
             setTimeout(() => {
               store.commit("updateStatus", "playing")
-            }, 3000)
-            store.commit("updateGameMap", data.gamemap);
+            }, 2000)
+            store.commit("updateGame", data.game);
           }
-          console.log(data);
+          //如果移动，代表都还活着
+          else if (data.event === "move") {
+            console.log(data)
+
+            const gameObj = store.state.pk.gameObject;
+            const [snake0, snake1] = gameObj.snakes;
+            snake0.set_direction(data.a_direction);
+            snake1.set_direction(data.b_direction);
+          }
+          else if (data.event === "result") {
+            console.log(data)
+            const gameObj = store.state.pk.gameObject;
+            const [snake0, snake1] = gameObj.snakes;
+            if (data.loser === "all" || data.loser === "a") {
+              snake0.status = "die";
+            }
+            if (data.loser === "all" || data.loser === "b") {
+              snake1.status = "die";
+            }
+            store.commit("updateLoser", data.loser);
+
+
+          }
         }
         socket.onclose = () => {
           console.log("disconnected!");
