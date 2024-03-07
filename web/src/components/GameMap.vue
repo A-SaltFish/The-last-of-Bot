@@ -16,6 +16,7 @@
       const store = useStore();
 
       onMounted(() => {
+        console.log("gamemap mounted")
         store.commit("updateGameObject",
           new GameMap(canvas.value.getContext('2d'), parent.value, store))
       });

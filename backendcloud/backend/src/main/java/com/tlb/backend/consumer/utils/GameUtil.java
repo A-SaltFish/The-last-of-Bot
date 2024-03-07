@@ -2,8 +2,11 @@ package com.tlb.backend.consumer.utils;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.tlb.backend.consumer.WebSocketServer;
+import com.tlb.backend.pojo.Bot;
 import com.tlb.backend.pojo.Record;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,17 +28,32 @@ public class GameUtil extends Thread {
     private Integer nextStepB = null;
     private String status = "playing";    //playing->finished
     private String loser = ""; //all平局，a输，b输
+    private Bot botA;
+    private Bot botB;
+    private final String botRunningUrl="http://127.0.0.1:3002";
+    private final String addBotUrl=botRunningUrl+"/bot/add/";
 
     private ReentrantLock lock = new ReentrantLock();
 
-    public GameUtil(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Integer idB) {
+    public GameUtil(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Bot botA, Integer idB,Bot botB) {
+        Integer botIdA=-1;
+        Integer botIdB=-1;
+        String botCodeA="";
+        String botCodeB="";
+        if(botA!=null){
+            botIdA=botA.getId();
+            botCodeA=botA.getContent();
+        }
+        if(botB!=null){
+            botIdB=botB.getId();
+            botCodeB=botB.getContent();
+        }
         this.rows = rows;
         this.cols = cols;
         this.inner_walls_count = inner_walls_count;
         this.walls = new int[rows][cols];
-        player1 = new PlayerUtil(idA, rows - 2, 1, new ArrayList<>());
-        player2 = new PlayerUtil(idB, 1, cols - 2, new ArrayList<>());
-
+        player1 = new PlayerUtil(idA,botIdA,botCodeA, rows - 2, 1, new ArrayList<>());
+        player2 = new PlayerUtil(idB,botIdB,botCodeB,  1, cols - 2, new ArrayList<>());
     }
 
 
@@ -106,6 +124,33 @@ public class GameUtil extends Thread {
         }
     }
 
+    //获取当前对局状态
+    private String getInput(PlayerUtil player){
+        //地图信息，自身蛇的坐标和操作，对方蛇的坐标和操作
+        PlayerUtil me,you;
+        if(player1.getId().equals(player.getId())){
+            me=player1;
+            you=player2;
+        }else{
+            me=player2;
+            you=player1;
+        }
+        String input=getMapString()+"#"+me.getSx()+"#"+me.getSy()+"#("+me.getStepsString()+")#"
+                +you.getSx()+"#"+you.getSy()+"#("+you.getStepsString()+")";
+        System.out.println("input:"+input);
+        return input;
+    }
+
+    private void sendBotCode(PlayerUtil player){
+        if(player.getBotId().equals(-1)) return;
+        //是机器就需要执行代码
+        MultiValueMap<String,String> data=new LinkedMultiValueMap<>();
+        data.add("user_id",player.getId().toString());
+        data.add("bot_code",player.getBotCode());
+        data.add("input",getInput(player));
+        WebSocketServer.restTemplate.postForObject(addBotUrl,data,String.class);
+    }
+
     public void setNextStepA(Integer nextStepA) {
         lock.lock();
         try {
@@ -134,6 +179,9 @@ public class GameUtil extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        //根据player1和player2是否是机器人，判断怎么进行nextStep
+        sendBotCode(player1);
+        sendBotCode(player2);
         //等待5s获取输入
         for (int i = 0; i < 60; i++) {
             try {

@@ -49,7 +49,7 @@
                     </div>
                     <div class="mb-3">
                       <label for="add-bot-code" class="form-label"> Bot代码</label>
-                      <VAceEditor v-model="botadd.content" @init="editorInit" lang="java" theme="github"
+                      <VAceEditor v-model:value="botadd.content" @init="editorInit" lang="java" theme="github"
                         style="height: 300px" />
                     </div>
                   </div>
@@ -191,6 +191,7 @@
 
       const add_bot = () => {
         botadd.error_msg = "";
+        console.log(botadd)
         $.ajax({
           url: "http://127.0.0.1:3000/user/bot/add/",
           type: "post",

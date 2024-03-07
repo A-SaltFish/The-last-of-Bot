@@ -19,8 +19,15 @@
       MatchGround,
       ResultBoard,
     },
+    onUnmounted () {
+      // const store = useStore();
+      // store.commit("updateStatus", "matching")
+      // store.commit("updateLoser", "none")
+    },
     setup () {
       const store = useStore();
+      store.commit("updateStatus", "matching")
+      store.commit("updateLoser", "none")
       const socketUrl = `ws://127.0.0.1:3000/websocket/${store.state.user.token}/`;
       console.log("url" + socketUrl);
 
@@ -47,7 +54,7 @@
             store.commit("updateStatus", "match-success")
             setTimeout(() => {
               store.commit("updateStatus", "playing")
-            }, 2000)
+            }, 500)
             store.commit("updateGame", data.game);
           }
           //如果移动，代表都还活着
@@ -55,6 +62,7 @@
             console.log(data)
 
             const gameObj = store.state.pk.gameObject;
+            console.log(gameObj)
             const [snake0, snake1] = gameObj.snakes;
             snake0.set_direction(data.a_direction);
             snake1.set_direction(data.b_direction);

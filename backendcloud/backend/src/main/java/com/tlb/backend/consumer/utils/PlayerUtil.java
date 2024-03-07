@@ -12,9 +12,13 @@ import java.util.List;
 public class PlayerUtil {
 
     private Integer id;
+
+    private Integer botId;      //-1代表御驾亲征，否则代表bot待机
+    private String botCode;
     private Integer sx;
     private Integer sy;
     private List<Integer> steps;
+
 
     //检查蛇什么时候会变长
     private boolean check_tail_increasing(int step){
