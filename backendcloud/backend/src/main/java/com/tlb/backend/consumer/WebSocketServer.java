@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint("/websocket/{token}")  // 注意不要以'/'结尾
 public class WebSocketServer {
     private Session session=null;
-    private User user;
+    public User user;
 
     public  static RecordMapper recordMapper;
 
@@ -39,7 +39,7 @@ public class WebSocketServer {
     final public static ConcurrentHashMap<Integer,WebSocketServer> users=new ConcurrentHashMap<>();
     //匹配池
 
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
 
     private static BotMapper botMapper;
 

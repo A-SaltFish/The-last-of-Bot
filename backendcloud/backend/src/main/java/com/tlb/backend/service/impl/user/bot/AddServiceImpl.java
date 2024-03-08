@@ -1,5 +1,6 @@
 package com.tlb.backend.service.impl.user.bot;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tlb.backend.mapper.BotMapper;
 import com.tlb.backend.pojo.Bot;
 import com.tlb.backend.pojo.User;
@@ -54,6 +55,13 @@ public class AddServiceImpl implements AddService {
             map.put("error","bot代码过长 ");
             return map;
         }
+        QueryWrapper<Bot> queryWrapper =new QueryWrapper<>();
+        queryWrapper.eq("user_id",user.getId());
+        if(botMapper.selectCount(queryWrapper)>=6){
+            map.put("error","每个用户只能创建六个Bot!");
+            return map;
+        }
+
         Date now=new Date();
         Bot bot=new Bot(null,user.getId(),title,description,content,0.0f,now,now);
         botMapper.insert(bot);

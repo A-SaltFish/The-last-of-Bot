@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests()
                 .requestMatchers("/user/account/token/","/user/all/",
-                        "/user/account/register/","/pk/receive/bot/move/").permitAll()
+                        "/user/account/register/","/pk/receive/bot/move/","/record/list/,/rank/list/").permitAll()
                 .requestMatchers("/pk/start/game/").hasIpAddress("127.0.0.1")
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();

@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.tlb.backend.consumer.WebSocketServer;
 import com.tlb.backend.pojo.Bot;
 import com.tlb.backend.pojo.Record;
+import com.tlb.backend.pojo.User;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -28,6 +29,7 @@ public class GameUtil extends Thread {
     private Integer nextStepB = null;
     private String status = "playing";    //playing->finished
     private String loser = ""; //all平局，a输，b输
+    private int gameSteps=0;
     private Bot botA;
     private Bot botB;
     private final String botRunningUrl="http://127.0.0.1:3002";
@@ -284,7 +286,42 @@ public class GameUtil extends Thread {
         return res.toString();
     }
 
+    private void updateUserRating(PlayerUtil player,Integer rating){
+        User user=WebSocketServer.userMapper.selectById(player.getId());
+        user.setRating(rating);
+        WebSocketServer.userMapper.updateById(user);
+    }
+
+
     private void saveToDataBase(){
+        Integer ratingA=WebSocketServer.userMapper.selectById(player1.getId()).getRating();
+        Integer ratingB=WebSocketServer.userMapper.selectById(player2.getId()).getRating();
+
+        if("a".equals(loser)){
+            if(gameSteps>=10){
+                ratingA-=2;
+                ratingB+=10;
+            } else{
+                ratingA-=3;
+                ratingB+=5;
+            }
+        }else if("b".equals(loser)){
+            if(gameSteps>=10){
+                ratingB-=2;
+                ratingA+=10;
+            } else{
+                ratingB-=3;
+                ratingA+=5;
+            }
+        }else{
+            ratingA-=1;
+            ratingB-=1;
+        }
+        System.out.println("存储");
+
+        updateUserRating(player1,ratingA);
+        updateUserRating(player2,ratingB);
+
         Record record=new Record(
                 null,
                 player1.getId(),
@@ -311,6 +348,7 @@ public class GameUtil extends Thread {
         //最多结束步数，不代表是1000，只是用1000来循环
         for (int i = 0; i < 1000; i++) {
             if (nextStep()) {
+                gameSteps++;
                 judge();
                 if(status.equals("playing")){
                     sendMove();

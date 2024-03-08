@@ -37,6 +37,7 @@
           username: "我的对手",
           photo: "https://tse3-mm.cn.bing.net/th/id/OIP-C.E3zje7gEBNi6NaiHz78FDwHaFj?w=4607&h=3455&rs=1&pid=ImgDetMain",
         })
+        store.commit("updateIsRecord", false)
         socket = new WebSocket(socketUrl);
 
         socket.onopen = () => {
@@ -54,7 +55,7 @@
             store.commit("updateStatus", "match-success")
             setTimeout(() => {
               store.commit("updateStatus", "playing")
-            }, 500)
+            }, 0)
             store.commit("updateGame", data.game);
           }
           //如果移动，代表都还活着
